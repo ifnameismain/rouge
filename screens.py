@@ -13,7 +13,7 @@ class GameScreen:
         #self.flame_positions = [[40, 180]]
         # self.flame_positions = [[100, 120]]
         self.walls = [(130, 100, 10, 60), (180, 100, 50, 60), (190, 70, 3, 10)]
-        self.light_map = create_lightmap([[self.player.x + 16, self.player.y + 16]], [Flame.color for _ in range(1)],
+        self.light_map = create_lightmap([[self.player.x, self.player.y]], [Flame.color for _ in range(1)],
                         [0 for _ in range(1)], self.walls)
         # self.map = Map()
 
@@ -42,7 +42,7 @@ class GameScreen:
         #self.flame_positions = [[*get_mouse()]]
         # if self.timer % 5 == 0:
         #     self.flame_positions = [[f[0] + 1, f[1]] for f in self.flame_positions]
-        self.light_map = create_lightmap([[self.player.x + 8, self.player.y + 8]],
+        self.light_map = create_lightmap([[self.player.x, self.player.y]],
                                          [Flame.color for _ in range(1)],
                                          [0 for _ in range(1)], self.walls)
 

@@ -151,3 +151,8 @@ def load_entity_animations(descriptor):
         a = animation_path.split('\\')[-1]
         animations[d][a] = load_animation_sequence(animation_path, (0,0,0))
     return animations
+
+
+def rotate_image(image, angle):
+    return pg.transform.rotate(image, angle)
+
