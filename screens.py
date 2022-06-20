@@ -11,7 +11,7 @@ class GameScreen:
         self.flames = []
         self.offset = 0
         self.timer = 0
-        #self.flame_positions = [[40, 180]]
+        # self.flame_positions = [[40, 180]]
         # self.flame_positions = [[100, 120]]
         self.walls = [(130, 100, 10, 60), (180, 100, 50, 60), (190, 70, 3, 10)]
         self.light_map = create_lightmap([[self.player.x, self.player.y]], [Flame.color for _ in range(1)],

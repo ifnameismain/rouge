@@ -41,7 +41,7 @@ if __name__ == '__main__':
     pg.font.init()
     FONTS = {"BIG": pg.font.SysFont("arial", 100, True),
              "MEDIUM": pg.font.SysFont("arial", 50, True),
-              "SMALL": pg.font.SysFont("arial", 30, True)}
+             "SMALL": pg.font.SysFont("arial", 30, True)}
     pg.display.set_caption(GAME_CAPTION)
     display_info = pg.display.Info()
     SCREEN_SIZE = (display_info.current_w, display_info.current_h)
