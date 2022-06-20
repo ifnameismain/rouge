@@ -1,6 +1,8 @@
 import pygame as pg
 import os.path
 import glob
+from main import SCALED_SIZE, UNSCALED_SIZE
+
 
 def create_text_object(text, font, position: tuple, color, max_size=(0, 0), line_width=20):
     words = [line.split(' ') for line in text.splitlines()]  # 2D array where each row is a list of words.
@@ -52,12 +54,11 @@ def create_button(pos, size, color=pg.color.Color('white'),
 
 
 def get_mouse():
-    from main import SCALED_SIZE, UNSCALED_SIZE
-    pos = tuple(p* UNSCALED_SIZE[i]/SCALED_SIZE[i] for i, p in enumerate(pg.mouse.get_pos()))
+    pos = tuple(p * UNSCALED_SIZE[i]/SCALED_SIZE[i] for i, p in enumerate(pg.mouse.get_pos()))
     return pos
 
 
-def draw_tile(window, pos, color, size, border=False, border_col=(255,255,255)):
+def draw_tile(window, pos, color, size, border=False, border_col=(255, 255, 255)):
     tile = pg.rect.Rect(pos[0], pos[1], size, size)
     window.fill(color, tile)
     if border:
@@ -144,12 +145,12 @@ def load_sprites(descriptor, color_key=None):
     return animations
 
 
-def load_entity_animations(descriptor):
+def load_entity_animations(descriptor, color_key=None):
     d = descriptor.split('\\')[-1].replace('static/', '')[:-1]
     animations = {d: {}}
     for animation_path in glob.glob(descriptor+'*'):
         a = animation_path.split('\\')[-1]
-        animations[d][a] = load_animation_sequence(animation_path, (0,0,0))
+        animations[d][a] = load_animation_sequence(animation_path, color_key)
     return animations
 
 

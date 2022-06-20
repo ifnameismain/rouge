@@ -26,8 +26,6 @@ class Player:
         self.player_angle = 0
 
     def draw(self, win):
-        # pg.draw.rect(win, self.color, self.rect)
-
         if any((move for key, move in self.move_state.items() if key in
                 (v for k, v in self.controls.items() if k in ['left', 'right', 'up', 'down']))):
             self.animation_timer += 1
