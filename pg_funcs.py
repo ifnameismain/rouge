@@ -1,7 +1,6 @@
 import pygame as pg
 import os.path
 import glob
-from main import SCALED_SIZE, UNSCALED_SIZE
 
 
 def create_text_object(text, font, position: tuple, color, max_size=(0, 0), line_width=20):
@@ -54,6 +53,7 @@ def create_button(pos, size, color=pg.color.Color('white'),
 
 
 def get_mouse():
+    from main import SCALED_SIZE, UNSCALED_SIZE
     pos = tuple(p * UNSCALED_SIZE[i]/SCALED_SIZE[i] for i, p in enumerate(pg.mouse.get_pos()))
     return pos
 
