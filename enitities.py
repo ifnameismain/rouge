@@ -1,5 +1,5 @@
 import pygame as pg
-from math import sqrt
+from math import sqrt, sin, cos, radians
 from pg_funcs import *
 from main import FRAME_RATE
 
@@ -9,7 +9,6 @@ class Player:
         self.x = x
         self.y = y
         self.width, self.height = 16, 16
-        self.rect = pg.Rect(self.x, self.y, self.width, self.height)
         self.color = color
         self.velX = 0
         self.velY = 0
@@ -21,7 +20,7 @@ class Player:
         self.running = False
         self.controls = {'left': pg.K_a, 'right': pg.K_d, 'up': pg.K_w, 'down': pg.K_s, 'sprint': pg.K_LSHIFT}
         self.move_state = {control: False for control in self.controls.values()}
-        self.animation = load_animation_sequence('static/animation', (0, 0, 0))
+        self.animation = load_animation_sequence('static/animation/player', (0, 0, 0))
         self.animation_timer, self.animation_index = 0, 0
         self.player_angle = 0
 
@@ -43,6 +42,8 @@ class Player:
 
         win.blit(rotate_image(self.animation[self.animation_index], self.player_angle),
                              (self.x - self.width//2, self.y - self.height//2))
+
+
 
     def handle_key_press(self, key, down):
         self.move_state[key] = down
@@ -107,4 +108,61 @@ class Player:
             elif self.velX < 0 and self.velY < 0:
                 self.player_angle = 45
 
+
+class Enemy:
+    def __init__(self, x, y, color=(100, 250, 100), fov_angle=90, fov_range=25, aud_range=15, att_range=2):
+        self.x = x
+        self.y = y
+        self.width, self.height = 16, 16
         self.rect = pg.Rect(self.x, self.y, self.width, self.height)
+        self.color = color
+        self.velX = 0
+        self.velY = 0
+        self.speed = 0.5
+        self.running = False
+        self.sleeping = False
+        self.sleep_timer = 0
+        self.enemy_angle = 270
+        self.rot_angle = 45
+        self.fov_angle = fov_angle
+        self.fov_range = fov_range
+        self.aud_range = aud_range
+        self.att_range = att_range
+        self.animation = load_animation_sequence('static/animation/enemy', (0, 0, 0))
+        self.animation_timer, self.animation_index = 0, 0
+        self.hit_box = 0
+
+    def draw(self, win):
+
+        # Draws enemies FOV
+        x1 = self.x
+        y1 = self.y
+        x2 = x1 - sin(radians(self.enemy_angle + (self.fov_angle / 2))) * self.fov_range
+        y2 = y1 - cos(radians(self.enemy_angle + (self.fov_angle / 2))) * self.fov_range
+        x3 = x1 - sin(radians(self.enemy_angle - (self.fov_angle / 2))) * self.fov_range
+        y3 = y1 - cos(radians(self.enemy_angle - (self.fov_angle / 2))) * self.fov_range
+        fov_points = [(x1, y1), (x2, y2), (x3, y3)]
+        pg.draw.polygon(win, (200, 200, 200), fov_points)
+
+        if not self.sleeping:
+            self.animation_timer += 1
+            if self.running:
+                self.animation_timer += 3
+            if self.animation_timer >= FRAME_RATE // 6:
+                self.animation_index += 1
+                if self.animation_index == len(self.animation):
+                    self.animation_index = 0
+                self.animation_timer = 0
+        else:
+            self.animation_timer, self.animation_index = 0, 0
+
+        win.blit(rotate_image(self.animation[self.animation_index], self.enemy_angle),
+                 (self.x - self.width // 2, self.y - self.height // 2))
+
+    def update(self):
+        pass
+
+    def boundary_check(self):
+        pass
+
+

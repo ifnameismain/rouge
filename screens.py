@@ -7,6 +7,7 @@ from map import Map
 class GameScreen:
     def __init__(self):
         self.player = Player(200, 200)
+        self.enemy = Enemy(100, 100)
         self.flames = []
         self.offset = 0
         self.timer = 0
@@ -30,6 +31,8 @@ class GameScreen:
             self.check_event(event)
 
         self.player.update()
+
+        self.enemy.update()
         # for flame in self.flame_positions.copy():
         #     self.flames.append(Flame(*flame))
         # for flame in self.flames.copy():
@@ -52,6 +55,7 @@ class GameScreen:
             flame.draw(surface)
         surface.blit(self.light_map, (0, 0), special_flags=pg.BLEND_RGB_ADD)
         self.player.draw(surface)
+        self.enemy.draw(surface)
 
         # for wall in self.walls:
         #     pg.draw.rect(surface, pg.Color('red'), wall, 1)
