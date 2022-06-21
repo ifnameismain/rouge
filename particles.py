@@ -1,3 +1,4 @@
+import game_globals
 import pygame as pg
 import random
 import time

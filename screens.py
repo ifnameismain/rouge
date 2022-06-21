@@ -1,3 +1,4 @@
+import game_globals
 from pg_funcs import *
 from particles import *
 from enitities import *

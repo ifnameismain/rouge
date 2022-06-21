@@ -1,7 +1,6 @@
-import pygame as pg
+import game_globals
 from math import sqrt, sin, cos, radians
 from pg_funcs import *
-from main import FRAME_RATE
 
 
 class Player:
@@ -30,7 +29,7 @@ class Player:
             self.animation_timer += 1
             if self.move_state[self.controls['sprint']]:
                 self.animation_timer += 1
-            if self.animation_timer >= FRAME_RATE//6:
+            if self.animation_timer >= game_globals.FRAME_RATE//6:
                 self.animation_index += 1
                 if self.animation_index == len(self.animation):
                     self.animation_index = 0
@@ -146,7 +145,7 @@ class Enemy:
             self.animation_timer += 1
             if self.running:
                 self.animation_timer += 3
-            if self.animation_timer >= FRAME_RATE // 6:
+            if self.animation_timer >= game_globals.FRAME_RATE // 6:
                 self.animation_index += 1
                 if self.animation_index == len(self.animation):
                     self.animation_index = 0
