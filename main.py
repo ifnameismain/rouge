@@ -1,6 +1,7 @@
 import game_globals
 from screens import *
 
+
 class Controller:
     def __init__(self):
         self.display = pg.display.get_surface()

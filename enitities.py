@@ -119,7 +119,7 @@ class Enemy:
         self.running = False
         self.sleeping = False
         self.sleep_timer = 0
-        self.enemy_angle = 270
+        self.enemy_angle = 90
         self.rot_angle = 45
         self.fov_angle = fov_angle
         self.fov_range = fov_range
@@ -128,6 +128,34 @@ class Enemy:
         self.animation = load_animation_sequence('static/animation/enemy', (0, 0, 0))
         self.animation_timer, self.animation_index = 0, 0
         self.hit_box = 0
+
+    def draw_2(self, win):
+        # create surface for field of view semicircle
+        radius = self.fov_range
+        fov_surf = pg.Surface((2*radius, 2*radius))
+        # Calculate angle center of eventual FOV circle slice.
+        angle_center = self.fov_angle//2
+        # Calculate rotation angle for FOV slice
+        rotation_needed = self.enemy_angle - angle_center
+        # draw semi-circle in centre of surface. image is now black with white semi circle
+        pg.draw.circle(fov_surf, (255, 255, 255), (radius, radius), radius, radius-5, draw_top_left=True,
+                       draw_bottom_left=True)
+        # create black surface and ironically fill white (for Blend later)
+        black_surf = pg.Surface((2*radius, 2*radius))
+        black_surf.fill((255, 255, 255))
+        # Blit black semicircle, image is now white with black semicircle
+        pg.draw.circle(black_surf, (0, 0, 0), (radius, radius), radius, radius-5, draw_top_left=True,
+                       draw_bottom_left=True)
+        # rotate for surface blit
+        black_surf = pg.transform.rotate(black_surf, self.fov_angle)
+        # place images together and take the minimum. Should only be left with FOV slice thats white
+        fov_surf.blit(black_surf, (0, 0), special_flags=pg.BLEND_RGB_MIN)
+        # rotate to position calculated
+        fov_surf = pg.transform.rotate(fov_surf, rotation_needed)
+        # blit circle and character
+        win.blit(fov_surf, (self.x-self.fov_range - self.width // 2, self.y-self.fov_range - self.height // 2))
+        win.blit(rotate_image(self.animation[self.animation_index], self.enemy_angle),
+                 (self.x - self.width // 2, self.y - self.height // 2))
 
     def draw(self, win):
 
