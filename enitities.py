@@ -41,7 +41,6 @@ class Player:
                              (self.x - self.width//2, self.y - self.height//2))
 
 
-
     def handle_key_press(self, key, down):
         self.move_state[key] = down
 
@@ -107,7 +106,7 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, x, y, color=(100, 250, 100), fov_angle=90, fov_range=30, aud_range=15, att_range=2):
+    def __init__(self, x, y, color=(100, 250, 100), fov_angle=90, fov_range=40, aud_range=15, att_range=2):
         self.x = x
         self.y = y
         self.width, self.height = 16, 16
@@ -120,7 +119,7 @@ class Enemy:
         self.sleeping = False
         self.sleep_timer = 0
         self.enemy_angle = 90
-        self.rot_angle = 45
+        self.rot_angle = 60
         self.fov_angle = fov_angle
         self.fov_range = fov_range
         self.aud_range = aud_range
@@ -153,7 +152,7 @@ class Enemy:
         # create light circle
         light_surf = pg.Surface((2 * radius, 2 * radius))
         for x in range(1, radius):
-            pg.draw.circle(light_surf, (x, x, x), (radius, radius), radius - x)
+            pg.draw.circle(light_surf, (2*x, x, x), (radius, radius), radius - x)
         fov_surf.blit(light_surf, (0, 0), special_flags=pg.BLEND_RGB_MIN)
         # place images together and take the minimum. Should only be left with FOV slice thats receding white
         # rotate to position calculated
