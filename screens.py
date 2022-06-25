@@ -30,7 +30,7 @@ class GameScreen:
     def update(self):
         for event in pg.event.get():
             self.check_event(event)
-
+        self.enemy.enemy_angle += 1
         self.player.update()
 
         self.enemy.update()
@@ -54,8 +54,8 @@ class GameScreen:
         surface.fill((0, 0, 0))
         for flame in self.flames:
             flame.draw(surface)
-        self.player.draw(surface)
         self.enemy.draw_2(surface)
+        self.player.draw(surface)
         surface.blit(self.light_map, (0, 0), special_flags=pg.BLEND_RGB_ADD)
 
 

@@ -118,7 +118,7 @@ class Enemy:
         self.running = False
         self.sleeping = False
         self.sleep_timer = 0
-        self.enemy_angle = 90
+        self.enemy_angle = 0
         self.rot_angle = 60
         self.fov_angle = fov_angle
         self.fov_range = fov_range
@@ -159,9 +159,10 @@ class Enemy:
         fov_surf = pg.transform.rotate(fov_surf, rotation_needed)
         fov_surf.set_colorkey((0, 0, 0))
         # blit circle and character
-        win.blit(fov_surf, (self.x-self.fov_range - self.width // 2, self.y-self.fov_range - self.height // 2))
-        win.blit(rotate_image(self.animation[self.animation_index], self.enemy_angle),
-                 (self.x - self.width // 2, self.y - self.height // 2))
+        iw, ih = fov_surf.get_size()
+        win.blit(fov_surf, (self.x - iw//2, self.y - ih//2))
+        e_image = rotate_image(self.animation[self.animation_index], self.enemy_angle)
+        win.blit(e_image, (self.x - e_image.get_width()// 2, self.y - e_image.get_width() // 2))
 
     def draw(self, win):
 
