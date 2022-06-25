@@ -3,7 +3,7 @@ from pg_funcs import *
 from particles import *
 from enitities import *
 from map import Map
-
+import config
 
 class GameScreen:
     def __init__(self):
@@ -54,9 +54,10 @@ class GameScreen:
         surface.fill((0, 0, 0))
         for flame in self.flames:
             flame.draw(surface)
-        surface.blit(self.light_map, (0, 0), special_flags=pg.BLEND_RGB_ADD)
         self.player.draw(surface)
         self.enemy.draw_2(surface)
+        surface.blit(self.light_map, (0, 0), special_flags=pg.BLEND_RGB_ADD)
+
 
         # for wall in self.walls:
         #     pg.draw.rect(surface, pg.Color('red'), wall, 1)

@@ -1,4 +1,4 @@
-import game_globals
+import config
 from math import sqrt, sin, cos, radians
 from pg_funcs import *
 
@@ -29,7 +29,7 @@ class Player:
             self.animation_timer += 1
             if self.move_state[self.controls['sprint']]:
                 self.animation_timer += 1
-            if self.animation_timer >= game_globals.FRAME_RATE//6:
+            if self.animation_timer >= config.FRAME_RATE//6:
                 self.animation_index += 1
                 if self.animation_index == len(self.animation):
                     self.animation_index = 0
@@ -107,7 +107,7 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, x, y, color=(100, 250, 100), fov_angle=90, fov_range=25, aud_range=15, att_range=2):
+    def __init__(self, x, y, color=(100, 250, 100), fov_angle=90, fov_range=30, aud_range=15, att_range=2):
         self.x = x
         self.y = y
         self.width, self.height = 16, 16
@@ -150,8 +150,15 @@ class Enemy:
         black_surf = pg.transform.rotate(black_surf, self.fov_angle)
         # place images together and take the minimum. Should only be left with FOV slice thats white
         fov_surf.blit(black_surf, (0, 0), special_flags=pg.BLEND_RGB_MIN)
+        # create light circle
+        light_surf = pg.Surface((2 * radius, 2 * radius))
+        for x in range(1, radius):
+            pg.draw.circle(light_surf, (x, x, x), (radius, radius), radius - x)
+        fov_surf.blit(light_surf, (0, 0), special_flags=pg.BLEND_RGB_MIN)
+        # place images together and take the minimum. Should only be left with FOV slice thats receding white
         # rotate to position calculated
         fov_surf = pg.transform.rotate(fov_surf, rotation_needed)
+        fov_surf.set_colorkey((0, 0, 0))
         # blit circle and character
         win.blit(fov_surf, (self.x-self.fov_range - self.width // 2, self.y-self.fov_range - self.height // 2))
         win.blit(rotate_image(self.animation[self.animation_index], self.enemy_angle),
@@ -173,7 +180,7 @@ class Enemy:
             self.animation_timer += 1
             if self.running:
                 self.animation_timer += 3
-            if self.animation_timer >= game_globals.FRAME_RATE // 6:
+            if self.animation_timer >= config.FRAME_RATE // 6:
                 self.animation_index += 1
                 if self.animation_index == len(self.animation):
                     self.animation_index = 0
