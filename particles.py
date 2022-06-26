@@ -82,8 +82,8 @@ def create_lightmap(sources, colors, sizes, obstacles: list = None):
     max_surf.blit(light_surf, (0, 0), special_flags=pg.BLEND_RGB_MIN)
     for obs in obstacles:
         pg.draw.rect(obs_surf, (120, 120, 120), obs)
-    obs_surf.blit(max_surf, (0,0), special_flags=pg.BLEND_RGB_MULT)
-    max_surf.blit(obs_surf, (0,0), special_flags=pg.BLEND_RGB_ADD)
+    obs_surf.blit(max_surf, (0, 0), special_flags=pg.BLEND_RGB_MULT)
+    max_surf.blit(obs_surf, (0, 0), special_flags=pg.BLEND_RGB_ADD)
     return max_surf
 
 
@@ -93,6 +93,34 @@ def get_poly_coord(c, source, radius):
     while (p[0] - source[0]) ** 2 + (p[1] - source[1]) ** 2 < 6 * radius ** 2:
         p = [p[0] + run, p[1] + rise]
     return p
+
+
+def get_cone(radius, angle, center_width=5):
+    # create surface for field of view semicircle
+    fov_surf = pg.Surface((2 * radius, 2 * radius))
+    # Calculate rotation angle for FOV slice
+    # draw semi-circle in centre of surface. image is now black with white semi circle
+    pg.draw.circle(fov_surf, (255, 255, 255), (radius, radius), radius, radius - center_width, draw_top_left=True,
+                   draw_bottom_left=True)
+    # create black surface and ironically fill white (for Blend later)
+    black_surf = pg.Surface((2 * radius, 2 * radius))
+    black_surf.fill((255, 255, 255))
+    # Blit black semicircle, image is now white with black semicircle
+    pg.draw.circle(black_surf, (0, 0, 0), (radius, radius), radius, radius - center_width, draw_top_left=True,
+                   draw_bottom_left=True)
+    # rotate for surface blit
+    black_surf = pg.transform.rotate(black_surf, angle)
+    # place images together and take the minimum. Should only be left with FOV slice thats white
+    fov_surf.blit(black_surf, (0, 0), special_flags=pg.BLEND_RGB_MIN)
+    # create light circle
+    light_surf = pg.Surface((2 * radius, 2 * radius))
+    for x in range(1, radius):
+        pg.draw.circle(light_surf, (2 * x, x, x), (radius, radius), radius - x)
+    # place images together and take the minimum. Should only be left with FOV slice thats receding white
+    fov_surf.blit(light_surf, (0, 0), special_flags=pg.BLEND_RGB_MIN)
+    fov_surf.set_colorkey((0, 0, 0))
+    return fov_surf
+
 
 
 class Flame:

@@ -5,10 +5,11 @@ from enitities import *
 from map import Map
 import config
 
+
 class GameScreen:
     def __init__(self):
-        self.player = Player(200, 200)
-        self.enemy = Enemy(100, 100)
+        self.player = Player(200, 200, animation_path='player')
+        self.enemy_list = [Enemy(100, 100, animation_path='enemy'), Enemy(100, 200, animation_path='enemy')]
         self.flames = []
         self.offset = 0
         self.timer = 0
@@ -17,7 +18,6 @@ class GameScreen:
         self.walls = [(130, 100, 10, 60), (180, 100, 50, 60), (190, 70, 3, 10)]
         self.light_map = create_lightmap([[self.player.x, self.player.y]], [Flame.color for _ in range(1)],
                         [0 for _ in range(1)], self.walls)
-        # self.map = Map()
 
     def check_event(self, event):
         if event.type == pg.KEYDOWN:
@@ -30,10 +30,10 @@ class GameScreen:
     def update(self):
         for event in pg.event.get():
             self.check_event(event)
-        self.enemy.enemy_angle += 1
         self.player.update()
-
-        self.enemy.update()
+        for enemy in self.enemy_list:
+            enemy.rotation += 1
+            enemy.update()
         # for flame in self.flame_positions.copy():
         #     self.flames.append(Flame(*flame))
         # for flame in self.flames.copy():
@@ -54,10 +54,7 @@ class GameScreen:
         surface.fill((0, 0, 0))
         for flame in self.flames:
             flame.draw(surface)
-        self.enemy.draw_2(surface)
+        for enemy in self.enemy_list:
+            enemy.draw(surface)
         self.player.draw(surface)
         surface.blit(self.light_map, (0, 0), special_flags=pg.BLEND_RGB_ADD)
-
-
-        # for wall in self.walls:
-        #     pg.draw.rect(surface, pg.Color('red'), wall, 1)

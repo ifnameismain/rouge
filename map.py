@@ -7,15 +7,13 @@ class Map:
     def __init__(self):
         self.walls = []
         self.wall_width = 5
-        self.level = self.create_level()
-
+        self.create_level()
 
     def create_level(self):
         # 0 = wall
         # 1 = floor
         # 2 = doorway
         # 3 = courtyard
-
         self.MAP_HEIGHT = 20
         self.MAP_WIDTH = 30
         self.min_room_length = 2
