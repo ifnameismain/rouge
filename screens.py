@@ -1,22 +1,23 @@
-import game_globals
+import config
 from pg_funcs import *
 from particles import *
 from enitities import *
 from map import Map
-import config
+from camera import *
 
 
 class GameScreen:
     def __init__(self):
-        self.player = Player(200, 200, animation_path='player')
+        self.player = Player(0, 0, animation_path='player')
         self.enemy_list = [Enemy(100, 100, animation_path='enemy'), Enemy(100, 200, animation_path='enemy')]
         self.flames = []
         self.offset = 0
         self.timer = 0
+        self.camera = PlayerCamera()
         # self.flame_positions = [[40, 180]]
         # self.flame_positions = [[100, 120]]
         self.walls = [(130, 100, 10, 60), (180, 100, 50, 60), (190, 70, 3, 10)]
-        self.light_map = create_lightmap([[self.player.x, self.player.y]], [Flame.color for _ in range(1)],
+        self.light_map = create_lightmap(self.camera, [[self.player.x, self.player.y]], [Flame.color for _ in range(1)],
                         [0 for _ in range(1)], self.walls)
 
     def check_event(self, event):
@@ -46,7 +47,7 @@ class GameScreen:
         #self.flame_positions = [[*get_mouse()]]
         # if self.timer % 5 == 0:
         #     self.flame_positions = [[f[0] + 1, f[1]] for f in self.flame_positions]
-        self.light_map = create_lightmap([[self.player.x, self.player.y]],
+        self.light_map = create_lightmap(self.camera, [[self.player.x, self.player.y]],
                                          [Flame.color for _ in range(1)],
                                          [0 for _ in range(1)], self.walls)
 
@@ -54,7 +55,7 @@ class GameScreen:
         surface.fill((0, 0, 0))
         for flame in self.flames:
             flame.draw(surface)
+        self.player.draw(surface, self.camera)
         for enemy in self.enemy_list:
-            enemy.draw(surface)
-        self.player.draw(surface)
+            enemy.draw(surface, self.camera)
         surface.blit(self.light_map, (0, 0), special_flags=pg.BLEND_RGB_ADD)

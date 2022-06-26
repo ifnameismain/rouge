@@ -1,28 +1,28 @@
-import game_globals
+import config
 import pygame as pg
 import random
 import time
 import math
 
 
-def create_lightmap(sources, colors, sizes, obstacles: list = None):
+def create_lightmap(camera, sources, colors, sizes, obstacles: list = None):
     light_surf = pg.Surface((pg.display.Info().current_w, pg.display.Info().current_h))
     max_surf = light_surf.copy()
     obs_surf = light_surf.copy()
     max_light_intensity = 60
     max_surf.fill((max_light_intensity, max_light_intensity, max_light_intensity))
-    t = time.perf_counter()
     light_intensity = 30
     light_step = 2
     light_radius = light_intensity * light_step
     for source, color, size in zip(sources, colors, sizes):
+        source = [source[0]+(camera.cx - camera.player_x), source[1]+(camera.cy - camera.player_y)]
         surf = pg.Surface((light_radius*2, light_radius*2))
         # gradient light
         for x in range(1, light_radius, light_step):
             pg.draw.circle(surf, (x, x, x), (light_radius, light_radius), light_radius-x)
         # calculate obstacle polygon
         for o in obstacles:
-            obs = [o[0]+1, o[1]+1, o[2]-3, o[3]-3]
+            obs = [o[0]+1+(camera.cx - camera.player_x), o[1]+1+(camera.cy - camera.player_y), o[2]-3, o[3]-3]
             corners = [(obs[0], obs[1]), (obs[0] + obs[2], obs[1]), (obs[0] + obs[2], obs[1] + obs[3]),
                        (obs[0], obs[1] + obs[3])]
             # check relative side
@@ -81,6 +81,7 @@ def create_lightmap(sources, colors, sizes, obstacles: list = None):
 
     max_surf.blit(light_surf, (0, 0), special_flags=pg.BLEND_RGB_MIN)
     for obs in obstacles:
+        obs = [obs[0] + (camera.cx - camera.player_x), obs[1] + (camera.cy - camera.player_y), obs[2], obs[3]]
         pg.draw.rect(obs_surf, (120, 120, 120), obs)
     obs_surf.blit(max_surf, (0, 0), special_flags=pg.BLEND_RGB_MULT)
     max_surf.blit(obs_surf, (0, 0), special_flags=pg.BLEND_RGB_ADD)

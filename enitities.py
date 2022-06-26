@@ -18,7 +18,7 @@ class Entity:
         self.animation_timer, self.animation_index = 0, 0
         self.rotation = 0
 
-    def draw(self, win):
+    def draw(self, win, camera):
         if self.animation_timer >= config.FRAME_RATE // 6:
             self.animation_index += 1
             if self.animation_index == len(self.animation):
@@ -39,7 +39,7 @@ class Player(Entity):
         self.controls = {'left': pg.K_a, 'right': pg.K_d, 'up': pg.K_w, 'down': pg.K_s, 'sprint': pg.K_LSHIFT}
         self.move_state = {control: False for control in self.controls.values()}
 
-    def draw(self, win):
+    def draw(self, win, camera):
         if any((move for key, move in self.move_state.items() if key in
                 (v for k, v in self.controls.items() if k in ['left', 'right', 'up', 'down']))):
             self.animation_timer += 1
@@ -52,9 +52,10 @@ class Player(Entity):
                 self.animation_timer = 0
         else:
             self.animation_timer, self.animation_index = 0, 0
-
-        win.blit(rotate_image(self.animation[self.animation_index], self.rotation),
-                             (self.x - self.width//2, self.y - self.height//2))
+        x, y = camera.player_pos(self.x, self.y)
+        image = rotate_image(self.animation[self.animation_index], self.rotation)
+        w, h = image.get_size()
+        win.blit(image, (x-w//2, y-h//2))
 
     def handle_key_press(self, key, down):
         self.move_state[key] = down
@@ -134,13 +135,14 @@ class Enemy(Entity):
         self.animation_timer, self.animation_index = 0, 0
         self.hit_box = 0
 
-    def draw(self, win):
+    def draw(self, win, camera):
         fov_surf = pg.transform.rotate(self.cone, self.rotation-self.fov_angle//2)
         # blit circle and character
         iw, ih = fov_surf.get_size()
-        win.blit(fov_surf, (self.x - iw // 2, self.y - ih // 2))
+        x, y = camera.object_pos(self.x, self.y)
+        win.blit(fov_surf, (x - iw // 2, y - ih // 2))
         e_image = rotate_image(self.animation[self.animation_index], self.rotation)
-        win.blit(e_image, (self.x - e_image.get_width() // 2, self.y - e_image.get_width() // 2))
+        win.blit(e_image, (x - e_image.get_width() // 2, y - e_image.get_width() // 2))
 
     def update(self):
         pass
