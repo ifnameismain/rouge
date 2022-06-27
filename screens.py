@@ -55,7 +55,9 @@ class GameScreen:
         surface.fill((0, 0, 0))
         for flame in self.flames:
             flame.draw(surface)
-        self.player.draw(surface, self.camera)
+        self.camera.update_player(self.player.x, self.player.y)
+        self.camera.update_camera()
         for enemy in self.enemy_list:
             enemy.draw(surface, self.camera)
+        self.player.draw(surface, self.camera)
         surface.blit(self.light_map, (0, 0), special_flags=pg.BLEND_RGB_ADD)
